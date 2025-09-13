@@ -1,42 +1,30 @@
 class Solution {
     public int maxFreqSum(String s) {
-        Map<Character, Integer> map = new HashMap<>();
-        Map<Character, Integer> map2 = new HashMap<>();
-        int m1=0,m2=0;
+        HashMap<Character, Integer> map1 = new HashMap<>();
+        HashMap<Character, Integer> map2 = new HashMap<>();
+        
         for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            if (isVowel(ch)) {
-                if (map.containsKey(ch)) {
-                    map.compute(ch, (key, oldValue) -> oldValue + 1);
-                } else {
-                    map.put(ch, 1);
-                }
-            } else {
-                if (map2.containsKey(ch)) {
-                    map2.compute(ch, (key, oldValue) -> oldValue + 1);
-                } else {
-                    map2.put(ch, 1);
-                }
-            }
+            char ch =  s.charAt(i);
+			
+            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+				
+            	map1.put(ch, map1.getOrDefault(ch, 0)+1);
+      
+			}else {
+            	map2.put(ch, map2.getOrDefault(ch, 0)+1);
+			}
         }
-        Map.Entry<Character, Integer> maxEntry1 = map.entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .orElse(null);
-        Map.Entry<Character, Integer> maxEntry2 = map2.entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .orElse(null);
-        if(maxEntry1!=null){
-               m1 = maxEntry1.getValue();
-        }
-        if(maxEntry2!=null){
-               m2 = maxEntry2.getValue();
-        }
-        return m1+m2;
-    }
-
-    private boolean isVowel(char c) {
-        return "aeiou".indexOf(c) != -1;
+        int count1 = 0;
+		for(int c : map1.values()) {
+			count1 = Math.max(c, count1);
+		}
+		
+		int count2 = 0;
+		for(int c : map2.values()) {
+			count2 = Math.max(c, count2);
+		}
+		
+		
+		return count1 +  count2;
     }
 }
