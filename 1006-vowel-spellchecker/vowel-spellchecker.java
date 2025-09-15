@@ -1,50 +1,43 @@
 class Solution {
     public String[] spellchecker(String[] wordlist, String[] queries) {
-        Set<String> set = new HashSet<>();
+        Set<String> exact = new HashSet<>();
         Map<String, String> caseMap = new HashMap<>();
-        for (String word : wordlist) {
-            set.add(word);
-            caseMap.putIfAbsent(word.toLowerCase(), word);
+        Map<String, String> vowelMap = new HashMap<>();
+
+        for (String w : wordlist) {
+            exact.add(w);
+            caseMap.putIfAbsent(w.toLowerCase(), w);
+            vowelMap.putIfAbsent(devowel(w.toLowerCase()), w);
         }
 
         for (int i = 0; i < queries.length; i++) {
-            String str1 = queries[i];
-            if (set.contains(str1)) {
+            String q = queries[i];
+            if (exact.contains(q))
                 continue;
-            }
-            String lower = str1.toLowerCase();
+            String lower = q.toLowerCase();
             if (caseMap.containsKey(lower)) {
                 queries[i] = caseMap.get(lower);
                 continue;
             }
-            boolean flag = false;
-            for (String str2 : wordlist) {
-                if (str1.length() != str2.length()) {
-                    continue;
-                }
-
-                int k = 0;
-                while (k < str1.length() &&
-                        ((isV(str1.charAt(k)) && isV(str2.charAt(k))) ||
-                                Character.toLowerCase(str1.charAt(k)) == Character.toLowerCase(str2.charAt(k)))) {
-                    k++;
-                }
-
-                if (k == str1.length()) {
-                    flag = true;
-                    queries[i] = str2;
-                    break;
-                }
-            }
-            if(!flag){
+            String vkey = devowel(lower);
+            if (vowelMap.containsKey(vkey)) {
+                queries[i] = vowelMap.get(vkey);
+            } else {
                 queries[i] = "";
             }
         }
         return queries;
     }
 
-    private boolean isV(char c) {
-        return "aeiou".indexOf(Character.toLowerCase(c)) != -1;
+    private String devowel(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if ("aeiou".indexOf(c) >= 0)
+                sb.append('*');
+            else
+                sb.append(c);
+        }
+        return sb.toString();
     }
 
 }
