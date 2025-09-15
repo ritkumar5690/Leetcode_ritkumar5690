@@ -3,22 +3,11 @@ class Solution {
         // int n = text.length();
         int count = 0,j=0,spa = 0;
         int m = brokenLetters.length();
-        while(j < text.length()){
-            int s = j;
-            while(j < text.length() && text.charAt(j) != ' '){
-                j++;
-            }
-            spa++;
-            j++;
-        }
-        j =0;
-        if(m == 0) return spa;
-        while(j < text.length()){
-            int s = j;
-            while(j < text.length() && text.charAt(j) != ' '){
-                j++;
-            }
-            String str = text.substring(s,j);
+        String[] arr = text.split(" ");
+        int size = arr.length;
+        if(m == 0) return size;
+        while(j < size){
+            String str = arr[j];
             for(int i =0;i<m;i++){
                 char ch = brokenLetters.charAt(i);
                 if(str.contains(String.valueOf(ch))){
@@ -28,6 +17,6 @@ class Solution {
             }
             j++;
         }
-        return spa-count;
+        return size-count;
     }
 }
