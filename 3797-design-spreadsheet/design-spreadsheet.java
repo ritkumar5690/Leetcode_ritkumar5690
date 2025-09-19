@@ -15,26 +15,15 @@ class Spreadsheet {
     }
 
     public int getValue(String formula) {
-        formula = formula.substring(1);
-
-        String[] parts = formula.split("\\+");
-        String temp1 = parts[0];
-        String temp2 = parts[1];
-
-        int sum = 0;
-
-        if (temp1.matches("\\d+")) {
-            sum += Integer.parseInt(temp1);
-        } else {
-            sum += map.getOrDefault(temp1,0);
-        }
-        if (temp2.matches("\\d+")) {
-            sum += Integer.parseInt(temp2);
-        } else {
-            sum += map.getOrDefault(temp2,0);
+        int sum =0;
+        for(String s : formula.substring(1).split("\\+")){
+            sum += mapToval(s);
         }
         
         return sum;
+    }
+    private int mapToval(String s){
+        return Character.isLetter(s.charAt(0))? map.getOrDefault(s,0) : Integer.parseInt(s);
     }
 
 }
