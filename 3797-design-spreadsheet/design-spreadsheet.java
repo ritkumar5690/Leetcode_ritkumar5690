@@ -1,5 +1,4 @@
 class Spreadsheet {
-    private String st = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     Map<String, Integer> map;
 
     public Spreadsheet(int rows) {
