@@ -1,91 +1,88 @@
 class Router {
-    private final int size;
-    private final Map<Integer, List<Integer>> counts;
-    private final Map<Long, int[]> packets;
-    private final Queue<Long> queue;
-
-    public Router(final int memoryLimit) {
-        this.size = memoryLimit;
-        this.packets = new HashMap<>();
-        this.counts = new HashMap<>();
-        this.queue = new LinkedList<>();
+    LinkedList<List<Integer>> que;
+    Map<Integer, List<Integer>> map;
+    private int n;
+    Set<String> dup;
+    public Router(int memoryLimit) {
+        n = memoryLimit;
+        que = new LinkedList<>();
+        map = new HashMap<>();
+        dup = new HashSet<>();
     }
+    private String code(int source, int destination, int timestamp){
+        return source + "-" + destination + "-" + timestamp;
+    }
+    public boolean addPacket(int source, int destination, int timestamp) {
 
-    public boolean addPacket(final int source, final int destination, final int timestamp) {
-        final long key = encode(source, destination, timestamp);
+        List<Integer> list = Arrays.asList(source, destination, timestamp);
+        String key = code(source, destination, timestamp);
+        if (dup.contains(key)) return false;
 
-        if(packets.containsKey(key))
-            return false;
+        if (que.size() >= n) {
+            List<Integer> removed = que.poll();
+            int reDest = removed.get(1);
+            List<Integer> restamps = map.get(reDest);
 
-        if(packets.size() >= size)
-            forwardPacket();
+            restamps.remove(0);
+            dup.remove(code(removed.get(0), reDest, removed.get(2)));
 
-        packets.put(key, new int[] { source, destination, timestamp });
-        queue.offer(key);
-
-        counts.putIfAbsent(destination, new ArrayList<>());
-        counts.get(destination).add(timestamp);
+        } 
+        que.add(list);
+        dup.add(key);
+        map.putIfAbsent(destination, new ArrayList<>());
+        map.get(destination).add(timestamp);
 
         return true;
     }
 
     public int[] forwardPacket() {
-        if(packets.isEmpty())
+        if (que.isEmpty()) {
             return new int[] {};
+        }
+        List<Integer> list = que.poll();
+        final int destination = list.get(1);
+        List<Integer> listm = map.get(destination);
+        listm.remove(0);
+        dup.remove(code(list.get(0), destination, list.get(2)));
 
-        final long key = queue.poll();
-        final int[] packet = packets.remove(key);
-
-        if(packet == null)
-            return new int[]{};
-
-        final int destination = packet[1];
-        final List<Integer> list = counts.get(destination);
-
-        list.remove(0);
-
-        return packet;
+        return list.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    public int getCount(final int destination, final int startTime, final int endTime) {
-        final List<Integer> list = counts.get(destination);
-        if(list == null || list.isEmpty())
-            return 0;
-
-        final int left = lowerBound(list, startTime);
-        final int right = upperBound(list, endTime);
+    public int getCount(int destination, int startTime, int endTime) {
+        List<Integer> list = map.get(destination);
+        if (list == null || list.isEmpty()) return 0;
+        int left = lowerBound(list, startTime);
+        int right = upperBound(list, endTime);
 
         return right - left;
     }
 
-    private long encode(final int source, final int destination, final int timestamp) {
-        return ((long)source << 40) | ((long)destination << 20) | timestamp;
-    }
-
-    private int lowerBound(final List<Integer> list, final int target) {
-        int low = 0, high = list.size();
-
-        while(low < high) {
-            final int mid = (low + high) >>> 1;
-            if(list.get(mid) < target) low = mid + 1;
-            else high = mid;
+    private int lowerBound(List<Integer> list, int target) {
+        int s = 0, e = list.size();
+        while (s < e) {
+            int m = s + (e - s) / 2;
+            if (list.get(m) >= target) e = m;
+            else s = m + 1;
         }
-
-        return low;
+        return s;
     }
 
-    private int upperBound(final List<Integer> list, final int target) {
-        int low = 0, high = list.size();
-
-        while(low < high) {
-            final int mid = (low + high) >>> 1;
-
-            if(list.get(mid) <= target)
-                low = mid + 1;
-            else
-                high = mid;
+    private int upperBound(List<Integer> list, int target) {
+        int s = 0, e = list.size();
+        while (s < e) {
+            int m = s + (e - s) / 2;
+            if (list.get(m) > target) e = m;
+            else s = m + 1;
         }
-
-        return low;
+        return s;
     }
+
 }
+
+/**
+ * Your Router object will be instantiated and called as such:
+ * Router obj = new Router(memoryLimit);
+ * boolean param_1 = obj.addPacket(source,destination,timestamp);
+ * int[] param_2 = obj.forwardPacket();
+ * int param_3 = obj.getCount(destination,startTime,endTime);
+ */
