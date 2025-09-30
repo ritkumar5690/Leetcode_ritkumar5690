@@ -1,8 +1,7 @@
 class Solution {
     public int triangularSum(int[] nums) {
-        int n = nums.length;
         
-        return findAns(nums,n);
+        return findAns(nums,nums.length);
     }
     private int findAns(int[] nums,int n){
         if(n == 1) return nums[0];
