@@ -1,9 +1,10 @@
 class Solution {
     public double largestTriangleArea(int[][] points) {
         double max = Integer.MIN_VALUE;
-        for (int i = 0; i < points.length; i++) {
-            for (int j = i; j < points.length; j++) {
-                for (int k = j; k < points.length; k++) {
+        int n = points.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                for (int k = j; k < n; k++) {
 
                     int x1 = points[i][0];
                     int y1 = points[i][1];
