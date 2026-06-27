@@ -1,6 +1,5 @@
 class Solution {
     public int maximumLength(int[] nums) {
-        Arrays.sort(nums);
         HashSet<Integer> set = new HashSet<>();
         HashSet<Integer> set2 = new HashSet<>();
         int countOne = 0;
@@ -27,12 +26,7 @@ class Solution {
                 count += 2;
                 n = n*n;
             }
-            if(!set.contains(n)){
-                count --;
-            }
-            else{
-                count++;
-            }
+            count += set.contains(n)? 1:-1;
             if(res < count) res = count;
         }
         return countOne > res ? countOne: res;
