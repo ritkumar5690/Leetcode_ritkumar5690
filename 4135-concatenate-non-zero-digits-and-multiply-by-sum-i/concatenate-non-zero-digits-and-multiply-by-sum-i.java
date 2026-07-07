@@ -2,17 +2,20 @@ class Solution {
     public long sumAndMultiply(int n) {
         if(n ==0) return 0;
         long sum = 0;
-        String concat = "";
+        long ans = 0;
+        long num = 0;
         while(n!=0){
             int temp = n % 10;
             sum += temp;
             if(temp !=0){
-                concat += temp;
+                num = num * 10 + temp;
             }
             n = n / 10;
         }
-        long m = Integer.parseInt(new StringBuilder(concat).reverse().toString());
-        m = m * sum ;
-        return m;
+        while(num!=0){
+            ans = ans*10 + num % 10;
+            num = num / 10;
+        }
+        return ans * sum;
     }
 }
