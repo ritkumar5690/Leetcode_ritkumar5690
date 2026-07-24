@@ -1,20 +1,32 @@
 class Solution {
     public int uniqueXorTriplets(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        Set<Integer> set2 = new HashSet<>();
-        List<Integer> list = new ArrayList<>();
-        
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i; j < nums.length; j++) {
-                int val = nums[i] ^ nums[j];
-                set2.add(val);
+        int max= 0;
+        for(int num : nums){
+            max = Math.max(max,num);
+        }
+        int t = 1;
+        while(t <= max){
+            t<<=1;
+        }
+        boolean[] s1 = new boolean[t];
+        boolean[] s2 = new boolean[t];
+        for(int i = 0;i<nums.length;i++){
+            for(int j = i;j<nums.length;j++){
+                s1[nums[i] ^ nums[j]] = true;
             }
         }
-        for(int pairXor : set2) {
-            for(int num : nums) {
-                set.add(pairXor ^ num);
+       for(int i = 0; i < t; i++) {
+            if(s1[i] == true) {
+                for(int num : nums) {
+                    s2[i ^ num] = true;
+                }
             }
         }
-        return set.size();
+        int count = 0; 
+        for(int i = 0; i < t; i++) {
+            if(s2[i] == true)
+                count++;
+        }
+        return count;
     }
 }
