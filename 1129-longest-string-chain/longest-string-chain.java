@@ -1,22 +1,21 @@
 class Solution {
-    Integer t[][];
+    
     public int longestStrChain(String[] words) {
         Arrays.sort(words,(a,b)-> a.length()-b.length());
         int n = words.length;
-        t = new Integer[n][n + 1];
-        return solve(words,0,-1);
-    }
-    private int solve(String[] words, int i,int p){
-        if(i == words.length) return 0;
-        if(t[i][p+1]!= null){
-            return t[i][p+1];
+
+        int t[] = new int[n];
+        Arrays.fill(t,1);
+        int maxL = 1;
+        for(int i = 0;i<n;i++){
+            for(int j = 0;j<i;j++){
+                if(isPredecessor(words[j], words[i])){
+                    t[i] = Math.max(t[i], t[j]+1);
+                    maxL = Math.max(maxL,t[i]);
+                }
+            }
         }
-        int take = 0;
-        if(p == -1 || isPredecessor(words[p], words[i])){
-            take = 1 + solve(words,i+1,i);
-        }
-        int skip = solve(words,i+1,p);
-        return t[i][p+1] = Math.max(take,skip);
+        return maxL;
     }
     private boolean isPredecessor(String shortWord, String longWord) {
 
