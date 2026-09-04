@@ -4,18 +4,11 @@ class Solution {
         int suffix[] = new int[n];
         suffix[n-1] = nums[n-1];
         for(int i =n-2;i>=0;i--){
-            if(suffix[i+1] > nums[i]){
-                suffix[i] = nums[i];
-            }
-            else{
-                suffix[i] = suffix[i+1];
-            }
+            suffix[i] = Math.min(suffix[i+1],nums[i]);
         }
         int max = nums[0];
         for(int i=0;i<n;i++){
-            if(max < nums[i]){
-                max= nums[i];
-            }
+            max = Math.max(max,nums[i]);
             int diff = max - suffix[i];
             if(diff <= k){
                 return i;
