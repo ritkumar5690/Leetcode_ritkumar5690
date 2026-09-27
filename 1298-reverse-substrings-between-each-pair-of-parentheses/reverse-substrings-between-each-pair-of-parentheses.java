@@ -1,29 +1,24 @@
 class Solution {
     public String reverseParentheses(String s) {
-        Deque<Character> st = new ArrayDeque<>();
-        int n = s.length();
-        int i =0;
-        while(i<n){
-            char ch = s.charAt(i);
-            if(ch == ')'){
-                Queue<Character> st2 = new ArrayDeque<>();
-                char ch1 = st.pop();
-                while(ch1 != '('){
-                    st2.offer(ch1);
-                    ch1 = st.pop();
-                }
-                while(!st2.isEmpty()){
-                    st.push(st2.poll());
-                }
-            }
-            st.push(ch);
-            i++;
-        }
-        StringBuilder sb = new StringBuilder();
-        while(!st.isEmpty()){
-            sb.append(st.pop());
-        }
-        return sb.reverse().toString().replace(")", "");
+       Deque<StringBuilder> st = new ArrayDeque<>();
+       st.push(new StringBuilder());
+       for(char ch : s.toCharArray()){
+        if (ch == '(') {
+                st.push(new StringBuilder());
 
+            } else if (ch == ')') {
+                StringBuilder current = st.pop();
+
+                current.reverse();
+
+                st.peek().append(current);
+
+            } else {
+
+                st.peek().append(ch);
+            }
+        }
+        return st.pop().toString();
     }
+
 }
