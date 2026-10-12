@@ -1,0 +1,29 @@
+class Solution {
+    private final int M = 1000000007; 
+    public int maxSum(List<Integer> nums, int k) {
+        int[] bitCount = new int[32];
+        for (int num : nums) {
+            for (int bit = 0; bit < 32; bit++) {
+                if ((num & (1 << bit)) != 0) {
+                    bitCount[bit]++;
+                }
+            }
+        }
+        long sum = 0;
+        for (int i = 0; i < k; i++) {
+
+            long value = 0;
+
+            for (int bit = 0; bit < 32; bit++) {
+                if (bitCount[bit] > 0) {
+                    value |= (1L << bit);
+                    bitCount[bit]--;
+                }
+            }
+
+            sum = (sum + value * value) % M;
+        }
+
+        return (int) sum;
+    }
+}
